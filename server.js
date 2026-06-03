@@ -8,10 +8,14 @@ const server = http.createServer(async (req, res) => {
   
   res.setHeader('Access-Control-Allow-Origin', '*');
   
-  // Быстрый ответ для проверки, что сервер жив
-  if (req.url === '/ping') {
+  // Тестовый маршрут для проверки
+  if (req.url === '/' || req.url === '/ping') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ pong: true, time: new Date().toISOString() }));
+    res.end(JSON.stringify({ 
+      status: 'ok', 
+      message: 'Proxy is working!',
+      time: new Date().toISOString()
+    }));
     return;
   }
   
