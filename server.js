@@ -12,7 +12,10 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 app.all('*', async (req, res) => {
   try {
     const path = req.originalUrl;
-    const url = `${SUPABASE_URL}${path}`;
+    console.log(`Proxying: ${req.method} ${path}`);
+    
+    // Формируем URL к Supabase
+    const targetUrl = `${SUPABASE_URL}${path}`;
     
     const options = {
       method: req.method,
@@ -27,14 +30,21 @@ app.all('*', async (req, res) => {
       options.body = JSON.stringify(req.body);
     }
     
-    const response = await fetch(url, options);
+    const response = await fetch(targetUrl, options);
     const data = await response.json();
+    
+    console.log(`Response status: ${response.status}`);
     
     res.status(response.status).json(data);
   } catch (error) {
     console.error('Proxy error:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// Корневой маршрут для проверки
+app.get('/', (req, res) => {
+  res.json({ status: 'Proxy is running', supabase: SUPABASE_URL });
 });
 
 const port = process.env.PORT || 3000;
