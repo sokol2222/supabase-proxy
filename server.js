@@ -2,6 +2,12 @@ const http = require('http');
 
 const SUPABASE_URL = 'https://wxawzuyxnydzbuklaald.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const PORT = process.env.PORT;
+
+if (!PORT) {
+  console.error('❌ PORT environment variable is not set!');
+  process.exit(1);
+}
 
 const server = http.createServer(async (req, res) => {
   console.log(`📥 ${req.method} ${req.url}`);
@@ -55,8 +61,7 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ error: 'Not found' }));
 });
 
-const port = process.env.PORT || 3000;
-server.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 Supabase proxy is running on port ${port}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Supabase proxy is running on port ${PORT}`);
   console.log(`🔑 ANON_KEY is ${SUPABASE_ANON_KEY ? 'set' : 'MISSING'}`);
 });
