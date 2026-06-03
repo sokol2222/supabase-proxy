@@ -3,51 +3,37 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 
 const SUPABASE_URL = 'https://wxawzuyxnydzbuklaald.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
+// Простой тестовый маршрут
+app.get('/', (req, res) => {
+  res.json({ message: 'Proxy is working!' });
+});
+
 // Прокси для всех запросов
-app.all('*', async (req, res) => {
+app.use(async (req, res) => {
   try {
-    const path = req.originalUrl;
-    console.log(`Proxying: ${req.method} ${path}`);
+    const targetUrl = SUPABASE_URL + req.url;
+    console.log('Proxying to:', targetUrl);
     
-    // Формируем URL к Supabase
-    const targetUrl = `${SUPABASE_URL}${path}`;
-    
-    const options = {
-      method: req.method,
+    const response = await fetch(targetUrl, {
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
       },
-    };
+    });
     
-    if (req.method !== 'GET' && req.method !== 'DELETE') {
-      options.body = JSON.stringify(req.body);
-    }
-    
-    const response = await fetch(targetUrl, options);
     const data = await response.json();
-    
-    console.log(`Response status: ${response.status}`);
-    
-    res.status(response.status).json(data);
-  } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({ error: error.message });
+    res.json(data);
+  } catch (err) {
+    console.error('Error:', err.message);
+    res.status(500).json({ error: err.message });
   }
-});
-
-// Корневой маршрут для проверки
-app.get('/', (req, res) => {
-  res.json({ status: 'Proxy is running', supabase: SUPABASE_URL });
 });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`✅ Supabase proxy running on port ${port}`);
+  console.log(`Proxy running on port ${port}`);
 });
