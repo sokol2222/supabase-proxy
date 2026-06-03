@@ -3,11 +3,6 @@ const http = require('http');
 const SUPABASE_URL = 'https://wxawzuyxnydzbuklaald.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
-// Глобальный обработчик неожиданных ошибок (предотвращает краш)
-process.on('uncaughtException', (err) => {
-  console.error('❌ Uncaught Exception:', err);
-});
-
 const server = http.createServer(async (req, res) => {
   console.log(`📥 ${req.method} ${req.url}`);
 
@@ -61,7 +56,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Supabase proxy is running on port ${port}`);
   console.log(`🔑 ANON_KEY is ${SUPABASE_ANON_KEY ? 'set' : 'MISSING'}`);
 });
