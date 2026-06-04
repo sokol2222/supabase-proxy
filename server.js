@@ -2,7 +2,7 @@ const http = require('http');
 
 const SUPABASE_URL = 'https://wxawzuyxnydzbuklaald.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 const server = http.createServer(async (req, res) => {
     // Логируем все запросы для отладки
