@@ -2,12 +2,7 @@ const http = require('http');
 
 const SUPABASE_URL = 'https://wxawzuyxnydzbuklaald.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const PORT = process.env.PORT;
-
-if (!PORT) {
-  console.error('❌ PORT environment variable is not set!');
-  process.exit(1);
-}
+const PORT = process.env.PORT || 3000;  // 👈 вот это главное исправление
 
 const server = http.createServer(async (req, res) => {
   console.log(`📥 ${req.method} ${req.url}`);
